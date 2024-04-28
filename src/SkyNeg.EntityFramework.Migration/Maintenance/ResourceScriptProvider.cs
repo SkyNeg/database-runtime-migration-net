@@ -32,7 +32,7 @@ namespace SkyNeg.EntityFramework.Migration
             _updateResourceScripts = assembly.GetManifestResourceNames().Select(GetUpdateResourceScript).Where(q => q is not null).ToList()!;
             //Assembly.Prefix.1_ScriptName.sql
             _createCommandRegex = new Regex(Regex.Escape($"{assemblyName}.{createScriptPrefix}.") + $@"(?<{ExecutionOrderRegexGroup}>(\d+))(_.*)?\.sql");
-            _createResourceScripts = assembly.GetManifestResourceNames().Select(GetCreateResourceScript).Where(q => q is not null).OrderBy(q => q.ExecutionOrder).Select((q, i) => new ResourceScript(q!.ResourceName, q.TargetVersion, new Version(0, i), i)).ToList();
+            _createResourceScripts = assembly.GetManifestResourceNames().Select(GetCreateResourceScript).Where(q => q is not null).OrderBy(q => q!.ExecutionOrder).Select((q, i) => new ResourceScript(q!.ResourceName, q.TargetVersion, new Version(0, i), i)).ToList();
         }
 
         public async Task<UpdateScript?> GetUpdateScriptAsync(Version version, CancellationToken cancellationToken)
