@@ -1,2 +1,2 @@
-# EntityFrameworkCore.RuntimeMigration.Sqlite
-Update Sqlite database using sql scripts at runtime
+# SkyNeg.EntityFramework.Migration
+Update database using sql scripts at runtime
