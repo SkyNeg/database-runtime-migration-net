@@ -7,6 +7,8 @@ namespace SkyNeg.EntityFramework.Migration
 {
     public class ResourceScriptProvider : IScriptProvider
     {
+        private const string DefaultCreateScriptPrefix = "Data.Create";
+        private const string DefaultUpdateScriptPrefix = "Data.Update";
         private const string FromVersionRegexGroup = "fromVersion";
         private const string ToVersionRegexGroup = "toVersion";
         private const string ExecutionOrderRegexGroup = "executeOrder";
@@ -18,10 +20,14 @@ namespace SkyNeg.EntityFramework.Migration
         private readonly Regex _updateCommandRegex;
         private readonly Regex _createCommandRegex;
 
+        public ResourceScriptProvider() : this(Assembly.GetCallingAssembly(), DefaultCreateScriptPrefix, DefaultUpdateScriptPrefix) { }
+
         public ResourceScriptProvider(string createScriptPrefix, string updateScriptPrefix) : this(Assembly.GetCallingAssembly(), createScriptPrefix, updateScriptPrefix) { }
 
         public ResourceScriptProvider(Assembly assembly, string createScriptPrefix, string updateScriptPrefix)
         {
+            createScriptPrefix = string.IsNullOrEmpty(createScriptPrefix) ? DefaultCreateScriptPrefix : createScriptPrefix;
+            updateScriptPrefix = string.IsNullOrEmpty(updateScriptPrefix) ? DefaultUpdateScriptPrefix : updateScriptPrefix;
             _assembly = assembly;
             var assemblyName = _assembly.GetName().Name;
             _createResourceScripts = new List<ResourceScript>();
@@ -32,7 +38,7 @@ namespace SkyNeg.EntityFramework.Migration
             _updateResourceScripts = assembly.GetManifestResourceNames().Select(GetUpdateResourceScript).Where(q => q is not null).ToList()!;
             //Assembly.Prefix.1_ScriptName.sql
             _createCommandRegex = new Regex(Regex.Escape($"{assemblyName}.{createScriptPrefix}.") + $@"(?<{ExecutionOrderRegexGroup}>(\d+))(_.*)?\.sql");
-            _createResourceScripts = assembly.GetManifestResourceNames().Select(GetCreateResourceScript).Where(q => q is not null).OrderBy(q => q.ExecutionOrder).Select((q, i) => new ResourceScript(q!.ResourceName, q.TargetVersion, new Version(0, i), i)).ToList();
+            _createResourceScripts = assembly.GetManifestResourceNames().Select(GetCreateResourceScript).Where(q => q is not null).OrderBy(q => q!.ExecutionOrder).Select((q, i) => new ResourceScript(q!.ResourceName, q.TargetVersion, new Version(0, i), i)).ToList();
         }
 
         public async Task<UpdateScript?> GetUpdateScriptAsync(Version version, CancellationToken cancellationToken)
