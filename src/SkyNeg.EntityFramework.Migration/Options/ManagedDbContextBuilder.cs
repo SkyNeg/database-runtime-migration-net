@@ -15,7 +15,7 @@ namespace SkyNeg.EntityFramework.Migration.Options
 
         public void SetDbContextOptions(Action<DbContextOptionsBuilder> options)
         {
-            Services.AddDbContextFactory<TContext>(options);
+            Services.AddDbContextFactory<RuntimeContext>(options);
             Services.AddDbContext<TContext>(options);
         }
     }

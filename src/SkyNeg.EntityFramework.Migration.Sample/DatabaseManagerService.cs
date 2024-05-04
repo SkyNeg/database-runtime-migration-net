@@ -21,7 +21,7 @@ namespace SkyNeg.EntityFramework.Migration.Sample
         {
             try
             {
-                var updateResult = await _databaseManager.UpdateAsync(cancellationToken);
+                var updateResult = await _databaseManager.UpdateComponentAsync("SampleComponent", cancellationToken);
                 if (updateResult.NewVersion != updateResult.InitialVersion)
                 {
                     _logger.LogInformation($"Database updated to version {updateResult.NewVersion}. Applied {updateResult.ScriptsApplied} scripts.");
