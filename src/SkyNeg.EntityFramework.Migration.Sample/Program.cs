@@ -18,9 +18,11 @@ await Host.CreateDefaultBuilder(args)
     })
     .ConfigureServices((hostContext, services) =>
     {
-        services.AddDbContextFactory<RuntimeContext>(options => options.UseSqlite(@"Data Source=data.db"));
-        services.AddSingleton<IScriptProvider>(new ResourceScriptProvider("Data.Create", "Data.Update"));
-        services.AddSingleton<IDatabaseManager, DatabaseManager>();
+        services.AddManagedDbContext<RuntimeContext>((options) =>
+        {
+            options.SetDbContextOptions(options => options.UseSqlite(@"Data Source=data.db"));
+            options.AddResourceScriptProvider("Data.Create", "Data.Update");
+        }, ServiceLifetime.Singleton);
 
         services.AddHostedService<DatabaseManagerService>();
     })
