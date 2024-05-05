@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
-namespace SkyNeg.EntityFramework.Migration
+namespace SkyNeg.EntityFramework.Migration.ScriptProviders
 {
     public class ResourceScriptProvider : IScriptProvider
     {
@@ -73,7 +73,7 @@ namespace SkyNeg.EntityFramework.Migration
                 {
                     Version fromVersion = new Version(1, versionCounter);
                     versionCounter++;
-                    Version toVersion = (i == _createResourceScripts.Count - 1) ? DefaultVersion : new Version(0, versionCounter);
+                    Version toVersion = i == _createResourceScripts.Count - 1 ? DefaultVersion : new Version(0, versionCounter);
                     yield return new UpdateScript() { SqlCommands = { sqlCommand }, FromVersion = fromVersion, ToVersion = toVersion };
                 }
             }
@@ -112,7 +112,7 @@ namespace SkyNeg.EntityFramework.Migration
             Version fromVersion = new Version(match.Groups[FromVersionRegexGroup].Value.Replace("_", ""));
             Version toVersion = new Version(match.Groups[ToVersionRegexGroup].Value.Replace("_", ""));
 
-            int executionOrder = (match.Groups.ContainsKey(ExecutionOrderRegexGroup) && match.Groups[ExecutionOrderRegexGroup].Success)
+            int executionOrder = match.Groups.ContainsKey(ExecutionOrderRegexGroup) && match.Groups[ExecutionOrderRegexGroup].Success
                 ? int.Parse(match.Groups[ExecutionOrderRegexGroup].Value)
                 : 0;
 
@@ -130,7 +130,7 @@ namespace SkyNeg.EntityFramework.Migration
             Version fromVersion = new Version(0, 0);
             Version toVersion = new Version(1, 0);
 
-            int executionOrder = (match.Groups.ContainsKey(ExecutionOrderRegexGroup) && match.Groups[ExecutionOrderRegexGroup].Success)
+            int executionOrder = match.Groups.ContainsKey(ExecutionOrderRegexGroup) && match.Groups[ExecutionOrderRegexGroup].Success
                 ? int.Parse(match.Groups[ExecutionOrderRegexGroup].Value)
                 : 0;
 

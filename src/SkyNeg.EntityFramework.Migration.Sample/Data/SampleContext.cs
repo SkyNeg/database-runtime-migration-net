@@ -2,10 +2,8 @@
 
 namespace SkyNeg.EntityFramework.Migration.Sample.Data
 {
-    internal class SampleContext : DbContext
+    internal class SampleContext : RuntimeContext
     {
-        public SampleContext() : base() { }
-
         public SampleContext(DbContextOptions options) : base(options) { }
     }
 }

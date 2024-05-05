@@ -6,7 +6,7 @@ namespace SkyNeg.EntityFramework.Migration
     {
         public DbSet<ComponentVersion> ComponentVersions { get; set; }
 
-        public RuntimeContext(DbContextOptions<RuntimeContext> options)
+        public RuntimeContext(DbContextOptions options)
         : base(options)
         {
         }
