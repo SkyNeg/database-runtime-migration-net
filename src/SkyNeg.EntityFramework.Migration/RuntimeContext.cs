@@ -2,12 +2,12 @@
 
 namespace SkyNeg.EntityFramework.Migration
 {
-    public class RuntimeContext : DbContext
+    public sealed class RuntimeContext<TContext> : DbContext
+        where TContext : DbContext
     {
         public DbSet<ComponentVersion> ComponentVersions { get; set; }
 
-        public RuntimeContext(DbContextOptions options)
-        : base(options)
+        public RuntimeContext(DbContextOptions<RuntimeContext<TContext>> options) : base(options)
         {
         }
     }

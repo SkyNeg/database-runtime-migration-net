@@ -5,13 +5,14 @@ using SkyNeg.EntityFramework.Migration.ScriptProviders;
 namespace SkyNeg.EntityFramework.Migration
 {
     public class DatabaseManager<TContext> : IDatabaseManager<TContext>
-        where TContext : RuntimeContext
+        where TContext : DbContext
     {
         private const string DefaultComponent = "_none_";
 
-        private readonly IScriptProvider<TContext> _scriptProvider;
-        private readonly IDbContextFactory<TContext> _dbContextFactory;
-        public DatabaseManager(IDbContextFactory<TContext> dbContextFactory, IScriptProvider<TContext> scriptProvider)
+        private readonly IScriptProvider _scriptProvider;
+        private readonly IDbContextFactory<RuntimeContext<TContext>> _dbContextFactory;
+
+        public DatabaseManager(IDbContextFactory<RuntimeContext<TContext>> dbContextFactory, IScriptProvider<TContext> scriptProvider)
         {
             _dbContextFactory = dbContextFactory;
             _scriptProvider = scriptProvider;

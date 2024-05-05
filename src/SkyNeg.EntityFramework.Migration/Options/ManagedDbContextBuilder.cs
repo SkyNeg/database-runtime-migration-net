@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using SkyNeg.EntityFramework.Migration.ScriptProviders;
 
 namespace SkyNeg.EntityFramework.Migration.Options
 {
     internal class ManagedDbContextBuilder<TContext> : IManagedDbContextBuilder<TContext>
-        where TContext : RuntimeContext
+        where TContext : DbContext
     {
         public IServiceCollection Services { get; }
 
@@ -17,15 +16,9 @@ namespace SkyNeg.EntityFramework.Migration.Options
 
         public void SetDbContextOptions(Action<DbContextOptionsBuilder> options)
         {
-            Services.AddDbContextFactory<TContext>(options);
-            Services.AddDbContext<TContext>(options);
+            Services.AddDbContextFactory<RuntimeContext<TContext>>(options);
+            Services.AddDbContextFactory<TContext>(options, ServiceLifetime.Singleton);
+            Services.AddDbContext<TContext>(options, ServiceLifetime.Scoped, ServiceLifetime.Scoped);
         }
-
-        public void AddComponentScriptProvider(string component, IScriptProvider scriptProvider)
-        {
-
-        }
-
-        public void AddDefaultScriptProvider(IScriptProvider scriptProvider) { }
     }
 }

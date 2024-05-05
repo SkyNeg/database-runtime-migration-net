@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace SkyNeg.EntityFramework.Migration.Options
 {
     public interface IManagedDbContextBuilder<TContext>
-        where TContext : RuntimeContext
+        where TContext : DbContext
     {
         IServiceCollection Services { get; }
 

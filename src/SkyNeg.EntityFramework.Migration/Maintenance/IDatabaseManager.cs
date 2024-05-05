@@ -1,7 +1,9 @@
-﻿namespace SkyNeg.EntityFramework.Migration
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace SkyNeg.EntityFramework.Migration
 {
     public interface IDatabaseManager<TContext>
-        where TContext : RuntimeContext
+        where TContext : DbContext
     {
         /// <summary>
         /// Retrieves database version.
