@@ -73,7 +73,7 @@ namespace SkyNeg.EntityFramework.Migration.ScriptProviders
                 {
                     Version fromVersion = new Version(1, versionCounter);
                     versionCounter++;
-                    Version toVersion = i == _createResourceScripts.Count - 1 ? DefaultVersion : new Version(0, versionCounter);
+                    Version toVersion = i == _createResourceScripts.Count - 1 ? GetMaxVersion() : new Version(0, versionCounter);
                     yield return new UpdateScript() { SqlCommands = { sqlCommand }, FromVersion = fromVersion, ToVersion = toVersion };
                 }
             }
