@@ -34,7 +34,7 @@ namespace SkyNeg.EntityFramework.Migration.ScriptProviders
             _updateResourceScripts = new List<ResourceScript>();
 
             //Assembly.Prefix.1.0.0.0_2.0.0.0_1_ScriptName.sql
-            _updateCommandRegex = new Regex(Regex.Escape($"{assemblyName}.{updateScriptPrefix}.") + $@"(?<{FromVersionRegexGroup}>_\d+\._\d+(\._\d+)?(\._\d+)?)_(?<{ToVersionRegexGroup}>\d+\._\d+(\._\d+)?(\._\d+)?)\.(_(?<{ExecutionOrderRegexGroup}>\d+)_)?(.*)?\.sql");
+            _updateCommandRegex = new Regex(Regex.Escape($"{assemblyName}.{updateScriptPrefix}.") + $@"(?<{FromVersionRegexGroup}>_\d+\._\d+(\._\d+)?(\._\d+)?)_(?<{ToVersionRegexGroup}>\d+\._\d+(\._\d+)?(\._\d+)?)\.((?<{ExecutionOrderRegexGroup}>\d+)_)?(.*)?\.sql");
             _updateResourceScripts = assembly.GetManifestResourceNames().Select(GetUpdateResourceScript).Where(q => q is not null).ToList()!;
             //Assembly.Prefix.1_ScriptName.sql
             _createCommandRegex = new Regex(Regex.Escape($"{assemblyName}.{createScriptPrefix}.") + $@"(?<{ExecutionOrderRegexGroup}>(\d+))(_.*)?\.sql");
