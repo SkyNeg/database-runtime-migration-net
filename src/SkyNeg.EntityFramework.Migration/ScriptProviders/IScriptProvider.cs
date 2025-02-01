@@ -1,4 +1,6 @@
-﻿namespace SkyNeg.EntityFramework.Migration
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace SkyNeg.EntityFramework.Migration.ScriptProviders
 {
     public interface IScriptProvider
     {
@@ -23,4 +25,6 @@
         /// <returns></returns>
         IAsyncEnumerable<UpdateScript> GetCreateScriptsAsync(CancellationToken cancellationToken);
     }
+
+    public interface IScriptProvider<TContext> : IScriptProvider where TContext : DbContext { }
 }

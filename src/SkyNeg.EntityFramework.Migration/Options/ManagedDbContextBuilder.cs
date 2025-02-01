@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace SkyNeg.EntityFramework.Migration.Options
 {
-    internal class ManagedDbContextBuilder<TContext> : IManagedDbContextBuilder
+    internal class ManagedDbContextBuilder<TContext> : IManagedDbContextBuilder<TContext>
         where TContext : DbContext
     {
         public IServiceCollection Services { get; }
@@ -11,12 +11,13 @@ namespace SkyNeg.EntityFramework.Migration.Options
         public ManagedDbContextBuilder(IServiceCollection services)
         {
             Services = services;
+            services.AddSingleton<IDatabaseManager<TContext>, DatabaseManager<TContext>>();
         }
 
         public void SetDbContextOptions(Action<DbContextOptionsBuilder> options)
         {
-            Services.AddDbContextFactory<TContext>(options);
-            Services.AddDbContext<TContext>(options);
+            Services.AddDbContextFactory<RuntimeContext<TContext>>(options);
+            Services.AddDbContextFactory<TContext>(options, ServiceLifetime.Singleton);
         }
     }
 }

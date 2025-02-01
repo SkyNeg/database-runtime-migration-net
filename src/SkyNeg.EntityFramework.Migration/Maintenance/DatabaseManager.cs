@@ -1,15 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SkyNeg.EntityFramework.Migration.Exceptions;
+using SkyNeg.EntityFramework.Migration.ScriptProviders;
 
 namespace SkyNeg.EntityFramework.Migration
 {
-    public class DatabaseManager : IDatabaseManager
+    public class DatabaseManager<TContext> : IDatabaseManager<TContext>
+        where TContext : DbContext
     {
-        private const string CoreComponent = "_core";
+        private const string DefaultComponent = "_none_";
 
         private readonly IScriptProvider _scriptProvider;
-        private readonly IDbContextFactory<RuntimeContext> _dbContextFactory;
-        public DatabaseManager(IScriptProvider scriptProvider, IDbContextFactory<RuntimeContext> dbContextFactory)
+        private readonly IDbContextFactory<RuntimeContext<TContext>> _dbContextFactory;
+
+        public DatabaseManager(IDbContextFactory<RuntimeContext<TContext>> dbContextFactory, IScriptProvider<TContext> scriptProvider)
         {
             _dbContextFactory = dbContextFactory;
             _scriptProvider = scriptProvider;
@@ -25,16 +28,17 @@ namespace SkyNeg.EntityFramework.Migration
             }
         }
 
-        public async Task<Version?> GetVersionAsync(CancellationToken cancellationToken) => await GetComponentVersionAsync(CoreComponent, cancellationToken);
+        public async Task<Version?> GetVersionAsync(CancellationToken cancellationToken) => await GetComponentVersionAsync(DefaultComponent, cancellationToken);
 
         public async Task<DatabaseUpdateResult> UpdateComponentAsync(string component, CancellationToken cancellationToken)
         {
             int scriptCounter = 0;
             Version? initialVersion = await GetComponentVersionAsync(component, cancellationToken);
             Version? currentVersion = initialVersion;
+            var componentScriptProvider = GetComponentScriptProvider(component);
             if (currentVersion == null)
             {
-                await foreach (var createScript in _scriptProvider.GetCreateScriptsAsync(cancellationToken))
+                await foreach (var createScript in componentScriptProvider.GetCreateScriptsAsync(cancellationToken))
                 {
                     try
                     {
@@ -58,7 +62,7 @@ namespace SkyNeg.EntityFramework.Migration
             }
 
             UpdateScript? updateScript;
-            while ((updateScript = await _scriptProvider.GetUpdateScriptAsync(currentVersion, cancellationToken)) != null)
+            while ((updateScript = await componentScriptProvider.GetUpdateScriptAsync(currentVersion, cancellationToken)) != null)
             {
                 if (updateScript.ToVersion == null)
                 {
@@ -79,8 +83,7 @@ namespace SkyNeg.EntityFramework.Migration
             return new DatabaseUpdateResult(currentVersion, scriptCounter, initialVersion);
         }
 
-        public async Task<DatabaseUpdateResult> UpdateAsync(CancellationToken cancellationToken) => await UpdateComponentAsync(CoreComponent, cancellationToken);
-
+        public async Task<DatabaseUpdateResult> UpdateAsync(CancellationToken cancellationToken) => await UpdateComponentAsync(DefaultComponent, cancellationToken);
 
         private async Task ApplyUpdateScriptAsync(string component, UpdateScript updateScript, CancellationToken cancellationToken)
         {
@@ -119,5 +122,7 @@ namespace SkyNeg.EntityFramework.Migration
                 }
             }
         }
+
+        private IScriptProvider GetComponentScriptProvider(string component) => _scriptProvider;
     }
 }
