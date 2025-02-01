@@ -18,7 +18,6 @@ namespace SkyNeg.EntityFramework.Migration.Options
         {
             Services.AddDbContextFactory<RuntimeContext<TContext>>(options);
             Services.AddDbContextFactory<TContext>(options, ServiceLifetime.Singleton);
-            Services.AddDbContext<TContext>(options, ServiceLifetime.Scoped, ServiceLifetime.Scoped);
         }
     }
 }

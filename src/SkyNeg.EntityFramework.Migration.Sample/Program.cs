@@ -20,7 +20,7 @@ await Host.CreateDefaultBuilder(args)
     {
         services.AddManagedDbContext<SampleContext>((options) =>
         {
-            options.SetDbContextOptions(options => options.UseSqlite(@"Data Source=data.db"));
+            options.SetDbContextOptions(options => options.UseSqlite(@"Data Source=./data/data.db"));
             options.AddResourceScriptProvider("Data.Create", "Data.Update");
         }, ServiceLifetime.Singleton);
 
