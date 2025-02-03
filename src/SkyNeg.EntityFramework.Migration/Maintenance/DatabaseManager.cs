@@ -57,8 +57,6 @@ namespace SkyNeg.EntityFramework.Migration
                 {
                     throw new DatabaseUpdateException($"Create scripts not found for {component}");
                 }
-
-                return new DatabaseUpdateResult(currentVersion, scriptCounter);
             }
 
             UpdateScript? updateScript;

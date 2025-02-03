@@ -30,4 +30,10 @@
     <ProjectReference Include="..\SkyNeg.EntityFramework.Migration\SkyNeg.EntityFramework.Migration.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Data\.include">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
